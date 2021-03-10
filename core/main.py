@@ -4,6 +4,8 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.common.keys import Keys
+from os import system
+
 
 ## MODIFY
 COACH = "https://app.slack.com/client/TQZR39SET/G01767VRLSG"
@@ -55,24 +57,25 @@ class Bot:
 
     @staticmethod
     def time_left(is_coach = False, coach_time = ""):
-        if is_coach and 9 < int(datetime.datetime.now().strftime("%H")) < int(coach_time.split(":")[0]):
-            hours, minutes, seconds = Bot.calculate_time(coach_time)
-            print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
+        if is_coach: 
+            if 9 < int(datetime.datetime.now().strftime("%H")) < int(coach_time.split(":")[0]):
+                hours, minutes, seconds = Bot.calculate_time(coach_time)
+                print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
 
-        elif 14 < int(datetime.datetime.now().strftime("%H")) < 9:
-            hours, minutes, seconds = Bot.calculate_time('09:00:16')
-            print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')        
+            elif int(coach_time.split(":")[0]) < int(datetime.datetime.now().strftime("%H")) < 14:
+                hours, minutes, seconds = Bot.calculate_time('14:00:16')
+                print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
 
-        elif is_coach and int(coach_time.split(":")[0]) < int(datetime.datetime.now().strftime("%H")) < 14:
-            hours, minutes, seconds = Bot.calculate_time('14:00:16')
-            print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
+            else:
+                hours, minutes, seconds = Bot.calculate_time('09:00:16')
+                print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')        
 
         elif not is_coach:    
             if 9 < int(datetime.datetime.now().strftime("%H")) < 14:
                 hours, minutes, seconds = Bot.calculate_time('14:00:16')
                 print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
 
-            elif 14 < int(datetime.datetime.now().strftime("%H")) < 9:
+            else:
                 hours, minutes, seconds = Bot.calculate_time('09:00:16')
                 print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
 
@@ -136,8 +139,10 @@ def main():
     time_left = input('Gostaria de um countdown: (y/n)')
 
     while True:
-
+        clear = lambda: system('clear')
+        
         sleep(1)
+        clear()
         
         if time_left.lower() == "y":
             if is_coach:
