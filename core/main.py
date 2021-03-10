@@ -41,7 +41,7 @@ class Bot:
         print('--------------')
         checkin_time_doing = input('O que esta fazendo: ')
         checkin_time_doubts = input('Dificuldades: ')
-        return checkin_time_doing, checkin_time_doubts,       
+        return checkin_time_doing, checkin_time_doubts,
 
     @staticmethod
     def calculate_time(s2):
@@ -53,90 +53,96 @@ class Bot:
         final = tempo.split(":")
         return final[0], final[1], final[2],
 
-    def search(self, link:str, text1: str = "", text2:str = ""):
+    def write_checkin(self, text1, text2):
+        input_to_write = self.driver.find_element_by_css_selector(
+            ".p-threads_footer__input.p-message_input .p-message_input_field .ql-editor"
+        )
+
+        if text1 != "":
+            What_im_doing = f'1. {text1.capitalize()}'
+            problems = text2.capitalize()
+            input_to_write.send_keys(What_im_doing + Keys.CONTROL + Keys.ENTER)
+            input_to_write.send_keys(problems)
+            input_to_write.send_keys(Keys.ENTER)
+
+        if text1 == "":
+            input_to_write.send_keys("Check-in")
+            input_to_write.send_keys(Keys.ENTER)
+
+        print("Check-in feito!")
+
+    def search(self, link: str, text1: str = "", text2: str = ""):
 
         self.driver.get(link)
-        
+
         sleep(2)
 
         last_child = self.driver.find_element_by_css_selector(
-            ".c-virtual_list__scroll_container > .c-virtual_list__item:last-child[role=listitem]"
-        )
+            ".c-virtual_list__scroll_container > .c-virtual_list__item:last-child[role=listitem]")
 
         if "Devs check-in" in last_child.text or "Coaches check-in" in last_child.text:
 
             hover = ActionChains(self.driver).move_to_element(last_child)
             hover.perform()
 
-            thread_button = self.driver.find_element_by_css_selector(
-                ".c-message_actions__button:nth-child(2)"
-            )
+            thread_button = self.driver.find_element_by_css_selector(".c-message_actions__button:nth-child(2)")
 
             thread_button.click()
 
             sleep(2)
 
-            input_to_write = self.driver.find_element_by_css_selector(
-                ".p-threads_footer__input.p-message_input .p-message_input_field .ql-editor"
-            )
+            self.write_checkin(text1, text2)
 
-            if text1 != "":
-                What_im_doing = f'1. {text1.capitalize()}'
-                problems = text2.capitalize()
-
-                input_to_write.send_keys(What_im_doing + Keys.CONTROL + Keys.ENTER)
-                input_to_write.send_keys(problems)
-                input_to_write.send_keys(Keys.ENTER)
-
-            if text1 == "":
-                input_to_write.send_keys("Check-in")
-                input_to_write.send_keys(Keys.ENTER)
-
-            print("Check-in feito!")
             sleep(1800)
 
 
-is_coach = Bot.is_coach()
-if is_coach:
-    coach_time = Bot.coach_time()
+        else:
+            print("Check-in não encontrado")
 
-doing, doubts = Bot.student_questions()
-
-print('--------------')
-time_left = input('Gostaria de um countdown: (y/n)')
-
-
-while True:
-    sleep(1)
-    if time_left.lower() == "y":
-        if 9 < int(datetime.datetime.now().strftime("%H")) < 14:
-            hours, minutes, seconds = Bot.calculate_time('14:00:16')
-            print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
-        else: 
-            hours, minutes, seconds = Bot.calculate_time('09:00:16')
-            print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
-
-    if is_coach:
-        if (
-        coach_time < datetime.datetime.now().strftime("%H:%M:%S") < coach_time.replace("0", "1", 2) 
-        ):   
-            print("Coach check-in Time!")
-            bot = Bot()
-            bot.search(COACH)
-        if (
-            "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
-            or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
-        ):   
-            print("Check-in Time!")
-            bot = Bot()
-            bot.search(DEV, doing, doubts)
+def main():
     
-    else: 
-        
-       if (
-            "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
-            or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
-        ):   
-            print("Check-in Time!")
-            bot = Bot()
-            bot.search(DEV, doing, doubts)
+    is_coach = Bot.is_coach()
+    if is_coach:
+        coach_time = Bot.coach_time()
+
+    doing, doubts = Bot.student_questions()
+
+    print('--------------')
+    time_left = input('Gostaria de um countdown: (y/n)')
+
+    while True:
+        sleep(1)
+        if time_left.lower() == "y":
+            if 9 < int(datetime.datetime.now().strftime("%H")) < 14:
+                hours, minutes, seconds = Bot.calculate_time('14:00:16')
+                print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
+            else:
+                hours, minutes, seconds = Bot.calculate_time('09:00:16')
+                print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
+
+        if is_coach:
+            if (
+                    coach_time < datetime.datetime.now().strftime("%H:%M:%S") < coach_time.replace("0", "1", 2)
+            ):
+                print("Coach check-in Time!")
+                bot = Bot()
+                bot.search(COACH)
+            if (
+                    "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
+                    or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
+            ):
+                print("Check-in Time!")
+                bot = Bot()
+                bot.search(DEV, doing, doubts)
+
+        else:
+            if (
+                    "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
+                    or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
+            ):
+                print("Check-in Time!")
+                bot = Bot()
+                bot.search(DEV, doing, doubts)
+
+if __name__ == "__main__":
+    main()
