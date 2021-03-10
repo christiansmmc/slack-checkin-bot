@@ -101,7 +101,6 @@ class Bot:
             sleep(1800)
 
 
-
 is_coach = Bot.is_coach()
 if is_coach:
     coach_time = Bot.coach_time()
@@ -143,8 +142,6 @@ while True:
             "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
             or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
         ):   
-        print("Check-in Time!")
-        bot = Bot()
-        bot.search(ALUNO_Q3, doing, doubts)
-        
-print("TA PRONTO ESSA PORRA !")
+            print("Check-in Time!")
+            bot = Bot()
+            bot.search(ALUNO_Q3, doing, doubts)
