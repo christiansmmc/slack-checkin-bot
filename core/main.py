@@ -14,7 +14,7 @@ ALUNO_Q3 = "https://app.slack.com/client/TQZR39SET/G018D3ASP88"
 ### 1. Open FIREFOX, login at slack
 ### 2. Go to about:profiles in firefox
 ### 3. Copy and paste the Root Directory
-FIREFOX_PROFILE = "../../.mozilla/firefox/thc4d1aq.default-release"
+FIREFOX_PROFILE = "../../../../../raphael/.mozilla/firefox/b3xhkfzw.default"
 
 class Bot:
     def __init__(self):
@@ -142,6 +142,6 @@ while True:
             "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
             or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
         ):   
-            print("Check-in Time!")
-            bot = Bot()
-            bot.search(ALUNO_Q3, doing, doubts)
+        print("Check-in Time!")
+        bot = Bot()
+        bot.search(ALUNO_Q3, doing, doubts)
