@@ -8,8 +8,13 @@ from os import system
 import pyfiglet
 from termcolor import colored, cprint
 
+#AQUI A URL DO CANAL qX-coaches, ONDE OCORRE O CHECK-IN PARA OS COACHES.
 COACH = "https://app.slack.com/client/TQZR39SET/G01767VRLSG"
+
+#AQUI A URL DO CANAL DO SEU FACILITADOR, ONDE OCORRE O CHECK-IN.
 DEV = "https://app.slack.com/client/TQZR39SET/G018D3ASP88"
+
+#AQUI O PATH DO PERFIL DO FIREFOX
 FIREFOX_PROFILE = "../../../.mozilla/firefox/thc4d1aq.default-release"
 
 CHECKIN_TIME = {"MORNING": {"start":"09:00:15", "end": "09:05:00"},

@@ -8,12 +8,14 @@ Only for Linux
 
 ## Instalação
 
-1. ```pip install selenium```  
+1. ```pip install selenium```
+2. ```pip install pyfiglet```
+3. ```pip install termcolor```   
 ---
-2. Baixar o [Geckodriver](https://github.com/mozilla/geckodriver/releases) e colocar o que extraiu na pasta usr/bin  
+4. Baixar o [Geckodriver](https://github.com/mozilla/geckodriver/releases) e colocar o que extraiu na pasta usr/bin  
 ---
-3. Configurar o core/main.py de acordo com suas preferências:  
-    *Alterar o COACH_Q2 com o link da página do check-in de coach, caso seja coach  
-    *Alterar o ALUNO_Q3 com o link da página do check-in de dev  
+5. Configurar o core/main.py de acordo com suas preferências:  
+    *Alterar o COACH com o link da página do check-in de coach, caso seja coach  
+    *Alterar o DEV com o link da página do check-in de dev  
     *Alterar o FIREFOX_PROFILE com o local de onde seu perfil do firefox esta (o firefox deve estar logado no slack)  
     *No Firefox digite about:profiles para verificar o local do perfil  
