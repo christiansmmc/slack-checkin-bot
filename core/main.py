@@ -140,6 +140,4 @@ while True:
         bot = Bot()
         bot.search(ALUNO_Q3, doing, doubts)
         
-
-
-
+print("TA PRONTO ESSA PORRA !")
