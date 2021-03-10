@@ -53,6 +53,29 @@ class Bot:
         final = tempo.split(":")
         return final[0], final[1], final[2],
 
+    @staticmethod
+    def time_left(is_coach = False, coach_time = ""):
+        if is_coach and 9 < int(datetime.datetime.now().strftime("%H")) < int(coach_time.split(":")[0]):
+            hours, minutes, seconds = Bot.calculate_time(coach_time)
+            print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
+
+        elif 14 < int(datetime.datetime.now().strftime("%H")) < 9:
+            hours, minutes, seconds = Bot.calculate_time('09:00:16')
+            print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')        
+
+        elif is_coach and int(coach_time.split(":")[0]) < int(datetime.datetime.now().strftime("%H")) < 14:
+            hours, minutes, seconds = Bot.calculate_time('14:00:16')
+            print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
+
+        elif not is_coach:    
+            if 9 < int(datetime.datetime.now().strftime("%H")) < 14:
+                hours, minutes, seconds = Bot.calculate_time('14:00:16')
+                print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
+
+            elif 14 < int(datetime.datetime.now().strftime("%H")) < 9:
+                hours, minutes, seconds = Bot.calculate_time('09:00:16')
+                print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
+
     def write_checkin(self, text1, text2):
         input_to_write = self.driver.find_element_by_css_selector(
             ".p-threads_footer__input.p-message_input .p-message_input_field .ql-editor"
@@ -92,6 +115,8 @@ class Bot:
             sleep(2)
 
             self.write_checkin(text1, text2)
+            
+            self.driver.close()
 
             sleep(1800)
 
@@ -100,7 +125,7 @@ class Bot:
             print("Check-in não encontrado")
 
 def main():
-    
+
     is_coach = Bot.is_coach()
     if is_coach:
         coach_time = Bot.coach_time()
@@ -111,14 +136,14 @@ def main():
     time_left = input('Gostaria de um countdown: (y/n)')
 
     while True:
+
         sleep(1)
+        
         if time_left.lower() == "y":
-            if 9 < int(datetime.datetime.now().strftime("%H")) < 14:
-                hours, minutes, seconds = Bot.calculate_time('14:00:16')
-                print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
+            if is_coach:
+                Bot.time_left(is_coach, coach_time)
             else:
-                hours, minutes, seconds = Bot.calculate_time('09:00:16')
-                print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
+                Bot.time_left()
 
         if is_coach:
             if (
@@ -134,7 +159,7 @@ def main():
                 print("Check-in Time!")
                 bot = Bot()
                 bot.search(DEV, doing, doubts)
-
+                
         else:
             if (
                     "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
