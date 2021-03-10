@@ -4,17 +4,13 @@ from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.common.keys import Keys
+from os import system
+import pyfiglet
+from termcolor import colored, cprint
 
-
-### Change COACH and ALUNO with the link from the slack tab from your coach and student check-in
-COACH_Q2 = "https://app.slack.com/client/TQZR39SET/G01767VRLSG"
-ALUNO_Q3 = "https://app.slack.com/client/TQZR39SET/G018D3ASP88"
-
-### Change with your FIREFOX profile that already has your slack logged in
-### 1. Open FIREFOX, login at slack
-### 2. Go to about:profiles in firefox
-### 3. Copy and paste the Root Directory
-FIREFOX_PROFILE = "../../../../../raphael/.mozilla/firefox/b3xhkfzw.default"
+COACH = "https://app.slack.com/client/TQZR39SET/G01767VRLSG"
+DEV = "https://app.slack.com/client/TQZR39SET/G018D3ASP88"
+FIREFOX_PROFILE = "../../../.mozilla/firefox/thc4d1aq.default-release"
 
 class Bot:
     def __init__(self):
@@ -25,7 +21,9 @@ class Bot:
 
     @staticmethod
     def is_coach():
-        print('--------------')
+        slack_bot = pyfiglet.figlet_format('SLACK BOT', font="banner3")
+        colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
+        print(colored_slack_bot)
         coach = input('Você é coach? (y/n) :')
 
         if coach.lower() == "y":
@@ -46,7 +44,7 @@ class Bot:
         print('--------------')
         checkin_time_doing = input('O que esta fazendo: ')
         checkin_time_doubts = input('Dificuldades: ')
-        return checkin_time_doing, checkin_time_doubts,       
+        return checkin_time_doing, checkin_time_doubts,
 
     @staticmethod
     def calculate_time(s2):
@@ -58,90 +56,145 @@ class Bot:
         final = tempo.split(":")
         return final[0], final[1], final[2],
 
-    def search(self, link:str, text1: str = "", text2:str = ""):
+    @staticmethod
+    def time_left(is_coach = False, coach_time = ""):
+        slack_bot = pyfiglet.figlet_format('SLACK BOT', font="banner3")
+        if is_coach: 
+            if 9 < int(datetime.datetime.now().strftime("%H")) < int(coach_time.split(":")[0]):
+                hours, minutes, seconds = Bot.calculate_time(coach_time)
+                timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
+                colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
+                print()
+                print(colored_slack_bot)
+                print(f'Tempo para o próximo checkin: \n{timer}')
+
+            elif int(coach_time.split(":")[0]) < int(datetime.datetime.now().strftime("%H")) < 14:
+                hours, minutes, seconds = Bot.calculate_time('14:00:16')
+                timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
+                colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
+                print()
+                print(colored_slack_bot)
+                print(f'Tempo para o próximo checkin: \n{timer}')
+
+            else:
+                hours, minutes, seconds = Bot.calculate_time('09:00:16')
+                timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
+                colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
+                print()
+                print(colored_slack_bot)
+                print(f'Tempo para o próximo checkin: \n{timer}')        
+
+        elif not is_coach:    
+            if 9 < int(datetime.datetime.now().strftime("%H")) < 14:
+                hours, minutes, seconds = Bot.calculate_time('14:00:16')
+                timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
+                colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
+                print()
+                print(colored_slack_bot)
+                print(f'Tempo para o próximo checkin: \n{timer}')
+
+            else:
+                hours, minutes, seconds = Bot.calculate_time('09:00:16')
+                timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
+                colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
+                print()
+                print(colored_slack_bot)
+                print(f'Tempo para o próximo checkin: \n{timer}')
+
+    def write_checkin(self, text1, text2):
+        input_to_write = self.driver.find_element_by_css_selector(
+            ".p-threads_footer__input.p-message_input .p-message_input_field .ql-editor"
+        )
+
+        if text1 != "":
+            What_im_doing = f'1. {text1.capitalize()}'
+            problems = text2.capitalize()
+            input_to_write.send_keys(What_im_doing + Keys.CONTROL + Keys.ENTER)
+            input_to_write.send_keys(problems)
+            input_to_write.send_keys(Keys.ENTER)
+
+        if text1 == "":
+            input_to_write.send_keys("Check-in")
+            input_to_write.send_keys(Keys.ENTER)
+
+        print("Check-in feito!")
+
+    def search(self, link: str, text1: str = "", text2: str = ""):
 
         self.driver.get(link)
-        
+
         sleep(2)
 
         last_child = self.driver.find_element_by_css_selector(
-            ".c-virtual_list__scroll_container > .c-virtual_list__item:last-child[role=listitem]"
-        )
+            ".c-virtual_list__scroll_container > .c-virtual_list__item:last-child[role=listitem]")
 
         if "Devs check-in" in last_child.text or "Coaches check-in" in last_child.text:
 
             hover = ActionChains(self.driver).move_to_element(last_child)
             hover.perform()
 
-            thread_button = self.driver.find_element_by_css_selector(
-                ".c-message_actions__button:nth-child(2)"
-            )
+            thread_button = self.driver.find_element_by_css_selector(".c-message_actions__button:nth-child(2)")
 
             thread_button.click()
 
             sleep(2)
 
-            input_to_write = self.driver.find_element_by_css_selector(
-                ".p-threads_footer__input.p-message_input .p-message_input_field .ql-editor"
-            )
+            self.write_checkin(text1, text2)
+            
+            self.driver.close()
 
-            if text1 != "":
-                What_im_doing = f'1. {text1.capitalize()}'
-                problems = text2.capitalize()
-
-                input_to_write.send_keys(What_im_doing + Keys.CONTROL + Keys.ENTER)
-                input_to_write.send_keys(problems)
-                input_to_write.send_keys(Keys.ENTER)
-
-            if text1 == "":
-                input_to_write.send_keys("Check-in")
-                input_to_write.send_keys(Keys.ENTER)
-
-            print("Check-in feito!")
             sleep(1800)
 
 
-is_coach = Bot.is_coach()
-if is_coach:
-    coach_time = Bot.coach_time()
+        else:
+            print("Check-in não encontrado")
 
-doing, doubts = Bot.student_questions()
+def main():
 
-print('--------------')
-time_left = input('Gostaria de um countdown: (y/n)')
-
-
-while True:
-    sleep(1)
-    if time_left.lower() == "y":
-        if 9 < int(datetime.datetime.now().strftime("%H")) < 14:
-            hours, minutes, seconds = Bot.calculate_time('14:00:16')
-            print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
-        else: 
-            hours, minutes, seconds = Bot.calculate_time('09:00:16')
-            print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
-
+    is_coach = Bot.is_coach()
     if is_coach:
-        if (
-        coach_time < datetime.datetime.now().strftime("%H:%M:%S") < coach_time.replace("0", "1", 2) 
-        ):   
-            print("Coach check-in Time!")
-            bot = Bot()
-            bot.search(COACH_Q2)
-        if (
-            "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
-            or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
-        ):   
-            print("Check-in Time!")
-            bot = Bot()
-            bot.search(ALUNO_Q3, doing, doubts)
-    
-    else: 
+        coach_time = Bot.coach_time()
+
+    doing, doubts = Bot.student_questions()
+
+    print('--------------')
+    time_left = input('Gostaria de um countdown: (y/n)')
+
+    while True:
+        clear = lambda: system('clear')
         
-       if (
-            "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
-            or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
-        ):   
-        print("Check-in Time!")
-        bot = Bot()
-        bot.search(ALUNO_Q3, doing, doubts)
+        sleep(1)
+        clear()
+        
+        if time_left.lower() == "y":
+            if is_coach:
+                Bot.time_left(is_coach, coach_time)
+            else:
+                Bot.time_left()
+
+        if is_coach:
+            if (
+                    coach_time < datetime.datetime.now().strftime("%H:%M:%S") < coach_time.replace("0", "1", 2)
+            ):
+                print("Coach check-in Time!")
+                bot = Bot()
+                bot.search(COACH)
+            if (
+                    "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
+                    or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
+            ):
+                print("Check-in Time!")
+                bot = Bot()
+                bot.search(DEV, doing, doubts)
+                
+        else:
+            if (
+                    "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
+                    or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
+            ):
+                print("Check-in Time!")
+                bot = Bot()
+                bot.search(DEV, doing, doubts)
+
+if __name__ == "__main__":
+    main()
