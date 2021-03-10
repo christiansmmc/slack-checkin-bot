@@ -5,17 +5,11 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.common.keys import Keys
 
-
-### Change COACH and ALUNO with the link from the slack tab from your coach and student check-in
-COACH_Q2 = "https://app.slack.com/client/TQZR39SET/G01767VRLSG"
-ALUNO_Q3 = "https://app.slack.com/client/TQZR39SET/G018D3ASP88"
-
-### Change with your FIREFOX profile that already has your slack logged in
-### 1. Open FIREFOX, login at slack
-### 2. Go to about:profiles in firefox
-### 3. Copy and paste the Root Directory
-### You must be logged at slack in your firefox
+## MODIFY
+COACH = "https://app.slack.com/client/TQZR39SET/G01767VRLSG"
+DEV = "https://app.slack.com/client/TQZR39SET/G018D3ASP88"
 FIREFOX_PROFILE = "../../../.mozilla/firefox/thc4d1aq.default-release"
+##
 
 class Bot:
     def __init__(self):
@@ -128,14 +122,14 @@ while True:
         ):   
             print("Coach check-in Time!")
             bot = Bot()
-            bot.search(COACH_Q2)
+            bot.search(COACH)
         if (
             "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
             or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
         ):   
             print("Check-in Time!")
             bot = Bot()
-            bot.search(ALUNO_Q3, doing, doubts)
+            bot.search(DEV, doing, doubts)
     
     else: 
         
@@ -145,4 +139,4 @@ while True:
         ):   
             print("Check-in Time!")
             bot = Bot()
-            bot.search(ALUNO_Q3, doing, doubts)
+            bot.search(DEV, doing, doubts)
