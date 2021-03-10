@@ -1,4 +1,5 @@
 ## Slack-Bot
+#### Only for Linux
 
 ##### Bot feito em python para automatizar o check-in feito no slack da Kenzie Academy Brazil
 ##### Check-in automático tanto para as 09:00 como para as 14:00
