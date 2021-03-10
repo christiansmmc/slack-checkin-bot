@@ -1,6 +1,5 @@
 from time import sleep
 import datetime
-
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
@@ -23,11 +22,9 @@ class Bot:
         coach = input('Você é coach? (y/n) :')
 
         if coach == "y":
-            print(coach)
             return True
 
         if coach == "n":
-            print(coach)
             return False
 
     @staticmethod
@@ -44,9 +41,17 @@ class Bot:
         checkin_time_doubts = input('Dificuldades: ')
         return checkin_time_doing, checkin_time_doubts,       
 
+    @staticmethod
+    def calculate_time(s2):
+        s1 = datetime.datetime.now().strftime('%H:%M:%S')
+        FMT = '%H:%M:%S'
+        tdelta = datetime.datetime.strptime(s2, FMT) - datetime.datetime.strptime(s1, FMT)
+        segundos = tdelta.seconds
+        tempo = str(datetime.timedelta(seconds=segundos))
+        final = tempo.split(":")
+        return final[0], final[1], final[2],
 
     def search(self, link:str, text1: str = "", text2:str = ""):
-        print(f'->{text1}<-->{text2}<-')
 
         self.driver.get(link)
         
@@ -96,20 +101,19 @@ if is_coach:
 
 doing, doubts = Bot.student_questions()
 
-
+print('--------------')
+time_left = input('Gostaria de um countdown: (y/n)')
 
 
 while True:
     sleep(1)
-    
-    hours = int(datetime.datetime.now().strftime("%H"))
-    minutes = int(datetime.datetime.now().strftime("%M"))
-    seconds = int(datetime.datetime.now().strftime("%S"))
-    
-    if 9 < int(datetime.datetime.now().strftime("%H")) < 14:
-        print(f'Faltam {abs(hours - 14)} horas e {abs(minutes - 60)} minutos e {abs(seconds - 60)} segundos')
-    else: 
-        print(f'Faltam {abs(hours - 9)} horas e {abs(minutes - 60)} minutos e {abs(seconds - 60)} segundos')
+    if time_left == "y":
+        if 9 < int(datetime.datetime.now().strftime("%H")) < 14:
+            hours, minutes, seconds = Bot.calculate_time('14:00:16')
+            print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
+        else: 
+            hours, minutes, seconds = Bot.calculate_time('09:00:16')
+            print(f'Faltam {hours} horas e {minutes} minutos e {seconds} segundos')
 
     if is_coach:
         if (
@@ -136,5 +140,6 @@ while True:
         bot = Bot()
         bot.search(ALUNO_Q3, doing, doubts)
         
+
 
 
