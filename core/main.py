@@ -12,6 +12,9 @@ COACH = "https://app.slack.com/client/TQZR39SET/G01767VRLSG"
 DEV = "https://app.slack.com/client/TQZR39SET/G018D3ASP88"
 FIREFOX_PROFILE = "../../../.mozilla/firefox/thc4d1aq.default-release"
 
+CHECKIN_TIME = {"MORNING": {"start":"09:00:15", "end": "09:05:00"},
+                "EVENING": {"start": "14:00:15", "end": "09:05:00"}}
+
 class Bot:
     def __init__(self):
 
@@ -69,7 +72,7 @@ class Bot:
                 print(f'Tempo para o próximo checkin: \n{timer}')
 
             elif int(coach_time.split(":")[0]) < int(datetime.datetime.now().strftime("%H")) < 14:
-                hours, minutes, seconds = Bot.calculate_time('14:00:16')
+                hours, minutes, seconds = Bot.calculate_time(CHECKIN_TIME["EVENING"]["start"])
                 timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
                 colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
                 print()
@@ -77,7 +80,7 @@ class Bot:
                 print(f'Tempo para o próximo checkin: \n{timer}')
 
             else:
-                hours, minutes, seconds = Bot.calculate_time('09:00:16')
+                hours, minutes, seconds = Bot.calculate_time(CHECKIN_TIME["MORNING"]["start"])
                 timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
                 colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
                 print()
@@ -86,7 +89,7 @@ class Bot:
 
         elif not is_coach:    
             if 9 < int(datetime.datetime.now().strftime("%H")) < 14:
-                hours, minutes, seconds = Bot.calculate_time('14:00:16')
+                hours, minutes, seconds = Bot.calculate_time(CHECKIN_TIME["EVENING"]["start"])
                 timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
                 colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
                 print()
@@ -94,7 +97,7 @@ class Bot:
                 print(f'Tempo para o próximo checkin: \n{timer}')
 
             else:
-                hours, minutes, seconds = Bot.calculate_time('09:00:16')
+                hours, minutes, seconds = Bot.calculate_time(CHECKIN_TIME["MORNING"]["start"])
                 timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
                 colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
                 print()
@@ -180,8 +183,8 @@ def main():
                 bot = Bot()
                 bot.search(COACH)
             if (
-                    "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
-                    or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
+                    CHECKIN_TIME["MORNING"]["start"] < datetime.datetime.now().strftime("%H:%M:%S") < CHECKIN_TIME["MORNING"]["end"]
+                    or CHECKIN_TIME["EVENING"]["start"] < datetime.datetime.now().strftime("%H:%M:%S") < CHECKIN_TIME["EVENING"]["end"]
             ):
                 print("Check-in Time!")
                 bot = Bot()
@@ -189,8 +192,8 @@ def main():
                 
         else:
             if (
-                    "09:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "09:05:00"
-                    or "14:00:15" < datetime.datetime.now().strftime("%H:%M:%S") < "14:05:00"
+                    CHECKIN_TIME["MORNING"]["start"] < datetime.datetime.now().strftime("%H:%M:%S") < CHECKIN_TIME["MORNING"]["end"]
+                    or CHECKIN_TIME["EVENING"]["start"] < datetime.datetime.now().strftime("%H:%M:%S") < CHECKIN_TIME["EVENING"]["end"]
             ):
                 print("Check-in Time!")
                 bot = Bot()
