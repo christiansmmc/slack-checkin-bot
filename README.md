@@ -14,4 +14,4 @@
 #####  Alterar o FIREFOX_PROFILE com o local de onde seu perfil do firefox esta (o firefox deve estar logado no slack)
 #####  No Firefox digite about:profiles para verificar o local do perfil
 
-#### Only for Linux
+Only for Linux
