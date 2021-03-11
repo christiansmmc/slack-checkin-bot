@@ -128,7 +128,12 @@ class Bot:
             input_to_write.send_keys("Check-in")
             input_to_write.send_keys(Keys.ENTER)
 
-        print("Check-in feito!")
+        CLEAR()
+        slack_bot = pyfiglet.figlet_format('SLACK BOT', font="banner3")
+        colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
+        print()
+        print(colored_slack_bot)
+        print("Check-in feito!\nTRAVA DE SEGURANÇA ATIVADA PRA EVITAR VÁRIOS CHECKINS, DENTRO DE 30 MINS SEU TIMER VOLTARÁ")
 
     def search(self, link: str, text1: str = "", text2: str = ""):
 
