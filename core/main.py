@@ -17,8 +17,11 @@ DEV = "https://app.slack.com/client/TQZR39SET/G018D3ASP88"
 #AQUI O PATH DO PERFIL DO FIREFOX
 FIREFOX_PROFILE = "../../../.mozilla/firefox/thc4d1aq.default-release"
 
+#AQUI O HORARIO DO CHECK-IN
 CHECKIN_TIME = {"MORNING": {"start":"09:00:15", "end": "09:05:00"},
-                "EVENING": {"start": "14:00:15", "end": "09:05:00"}}
+                "EVENING": {"start": "14:00:15", "end": "14:05:00"}}
+
+CLEAR = lambda: system('clear')
 
 class Bot:
     def __init__(self):
@@ -111,7 +114,7 @@ class Bot:
 
     def write_checkin(self, text1, text2):
         input_to_write = self.driver.find_element_by_css_selector(
-            ".p-threads_footer__input.p-message_input .p-message_input_field .ql-editor"
+            "div .p-threads_footer__input.p-message_input .p-message_input_field .ql-editor"
         )
 
         if text1 != "":
@@ -148,14 +151,21 @@ class Bot:
             sleep(2)
 
             self.write_checkin(text1, text2)
+
+            sleep(1)
             
             self.driver.close()
 
             sleep(1800)
-
-
+            
         else:
-            print("Check-in não encontrado")
+            CLEAR()
+
+            print("Check-in não encontrado\nTentando novamente em 20 segundos...")
+
+            self.driver.close()
+
+            sleep(20)
 
 def main():
 
@@ -169,10 +179,9 @@ def main():
     time_left = input('Gostaria de um countdown: (y/n)')
 
     while True:
-        clear = lambda: system('clear')
         
         sleep(1)
-        clear()
+        CLEAR()
         
         if time_left.lower() == "y":
             if is_coach:
