@@ -3,6 +3,7 @@ import datetime
 from selenium import webdriver
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.keys import Keys
 from os import system
 import pyfiglet
@@ -14,10 +15,10 @@ CLEAR = lambda: system('clear')
 
 class Bot:
     def __init__(self):
-
+        options = Options()
+        options.headless = True
         fp = webdriver.FirefoxProfile(FIREFOX_PROFILE)
-
-        self.driver = webdriver.Firefox(fp)
+        self.driver = webdriver.Firefox(fp, options=options)
 
     @staticmethod
     def is_coach():
@@ -135,16 +136,12 @@ class Bot:
 
             sleep(1)
             
-            self.driver.close()
-
             sleep(1800)
             
         else:
             CLEAR()
 
             print("Check-in não encontrado\nTentando novamente em 20 segundos...")
-
-            self.driver.close()
 
             sleep(20)
 
