@@ -7,19 +7,8 @@ from selenium.webdriver.common.keys import Keys
 from os import system
 import pyfiglet
 from termcolor import colored, cprint
+from config import FIREFOX_PROFILE, CHECKIN_TIME, DEV, COACH
 
-#AQUI A URL DO CANAL qX-coaches, ONDE OCORRE O CHECK-IN PARA OS COACHES.
-COACH = "https://app.slack.com/client/TQZR39SET/G01767VRLSG"
-
-#AQUI A URL DO CANAL DO SEU FACILITADOR, ONDE OCORRE O CHECK-IN.
-DEV = "https://app.slack.com/client/TQZR39SET/G018D3ASP88"
-
-#AQUI O PATH DO PERFIL DO FIREFOX
-FIREFOX_PROFILE = "../../../.mozilla/firefox/thc4d1aq.default-release"
-
-#AQUI O HORARIO DO CHECK-IN
-CHECKIN_TIME = {"MORNING": {"start":"09:00:10", "end": "09:05:00"},
-                "EVENING": {"start": "14:00:10", "end": "14:05:00"}}
 
 CLEAR = lambda: system('clear')
 
@@ -86,8 +75,7 @@ class Bot:
                 hours, minutes, seconds = Bot.calculate_time(coach_time)
                 Bot.terminal_countdown(hours, minutes, seconds, True)
                 
-
-            elif int(coach_time.split(":")[0]) < int(datetime.datetime.now().strftime("%H")) < 14:
+            elif int(coach_time.split(":")[0]) <= int(datetime.datetime.now().strftime("%H")) < 14:
                 hours, minutes, seconds = Bot.calculate_time(CHECKIN_TIME["EVENING"]["start"])
                 Bot.terminal_countdown(hours, minutes, seconds, True)
 
