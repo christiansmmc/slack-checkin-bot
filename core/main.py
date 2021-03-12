@@ -47,7 +47,7 @@ class Bot:
         sleep(2)
 
         last_child = self.driver.find_element_by_css_selector(
-            ".c-virtual_list__scroll_container > .c-virtual_list__item:nth-last-child(3)[role=listitem]")
+            ".c-virtual_list__scroll_container > .c-virtual_list__item:last-child[role=listitem]")
 
         if "Devs check-in" in last_child.text or "Coaches check-in" in last_child.text:
 
