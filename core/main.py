@@ -68,49 +68,41 @@ class Bot:
         return final[0], final[1], final[2],
 
     @staticmethod
-    def time_left(is_coach = False, coach_time = ""):
+    def terminal_countdown(hours = 0, minutes = 0, seconds = 0, timer = False, message = "Tempo para o próximo checkin:"):
         slack_bot = pyfiglet.figlet_format('SLACK BOT', font="banner3")
+        timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
+        colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
+        print()
+        print(colored_slack_bot)
+        print(f'{message}\n{timer}') if timer else print("Check-in feito!\nTRAVA DE SEGURANÇA ATIVADA PRA EVITAR VÁRIOS CHECKINS, DENTRO DE 30 MINS SEU TIMER VOLTARÁ")
+
+
+
+    @staticmethod
+    def time_left(is_coach = False, coach_time = ""):
+        
         if is_coach: 
             if 9 < int(datetime.datetime.now().strftime("%H")) < int(coach_time.split(":")[0]):
                 hours, minutes, seconds = Bot.calculate_time(coach_time)
-                timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
-                colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
-                print()
-                print(colored_slack_bot)
-                print(f'Tempo para o próximo checkin: \n{timer}')
+                Bot.terminal_countdown(hours, minutes, seconds, True)
+                
 
             elif int(coach_time.split(":")[0]) < int(datetime.datetime.now().strftime("%H")) < 14:
                 hours, minutes, seconds = Bot.calculate_time(CHECKIN_TIME["EVENING"]["start"])
-                timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
-                colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
-                print()
-                print(colored_slack_bot)
-                print(f'Tempo para o próximo checkin: \n{timer}')
+                Bot.terminal_countdown(hours, minutes, seconds, True)
 
             else:
                 hours, minutes, seconds = Bot.calculate_time(CHECKIN_TIME["MORNING"]["start"])
-                timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
-                colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
-                print()
-                print(colored_slack_bot)
-                print(f'Tempo para o próximo checkin: \n{timer}')        
+                Bot.terminal_countdown(hours, minutes, seconds, True)
 
         elif not is_coach:    
             if 9 < int(datetime.datetime.now().strftime("%H")) < 14:
                 hours, minutes, seconds = Bot.calculate_time(CHECKIN_TIME["EVENING"]["start"])
-                timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
-                colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
-                print()
-                print(colored_slack_bot)
-                print(f'Tempo para o próximo checkin: \n{timer}')
+                Bot.terminal_countdown(hours, minutes, seconds, True)
 
             else:
                 hours, minutes, seconds = Bot.calculate_time(CHECKIN_TIME["MORNING"]["start"])
-                timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
-                colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
-                print()
-                print(colored_slack_bot)
-                print(f'Tempo para o próximo checkin: \n{timer}')
+                Bot.terminal_countdown(hours, minutes, seconds, True)
 
     def write_checkin(self, text1, text2):
         input_to_write = self.driver.find_element_by_css_selector(
@@ -129,11 +121,7 @@ class Bot:
             input_to_write.send_keys(Keys.ENTER)
 
         CLEAR()
-        slack_bot = pyfiglet.figlet_format('SLACK BOT', font="banner3")
-        colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
-        print()
-        print(colored_slack_bot)
-        print("Check-in feito!\nTRAVA DE SEGURANÇA ATIVADA PRA EVITAR VÁRIOS CHECKINS, DENTRO DE 30 MINS SEU TIMER VOLTARÁ")
+        Bot.terminal_countdown()
 
     def search(self, link: str, text1: str = "", text2: str = ""):
 
