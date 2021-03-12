@@ -18,8 +18,8 @@ DEV = "https://app.slack.com/client/TQZR39SET/G018D3ASP88"
 FIREFOX_PROFILE = "../../../.mozilla/firefox/thc4d1aq.default-release"
 
 #AQUI O HORARIO DO CHECK-IN
-CHECKIN_TIME = {"MORNING": {"start":"09:00:15", "end": "09:05:00"},
-                "EVENING": {"start": "14:00:15", "end": "14:05:00"}}
+CHECKIN_TIME = {"MORNING": {"start":"09:00:10", "end": "09:05:00"},
+                "EVENING": {"start": "14:00:10", "end": "14:05:00"}}
 
 CLEAR = lambda: system('clear')
 
@@ -68,13 +68,13 @@ class Bot:
         return final[0], final[1], final[2],
 
     @staticmethod
-    def terminal_countdown(hours = 0, minutes = 0, seconds = 0, timer = False, message = "Tempo para o próximo checkin:"):
+    def terminal_countdown(hours = 0, minutes = 0, seconds = 0, show_timer = False, message = "Tempo para o próximo checkin:"):
         slack_bot = pyfiglet.figlet_format('SLACK BOT', font="banner3")
-        timer = pyfiglet.figlet_format(f'{hours} : {minutes} : {seconds}', font="banner3")
+        timer = pyfiglet.figlet_format(f'{hours}:{minutes}:{seconds}', font="banner3")
         colored_slack_bot = colored(slack_bot, 'red', 'on_white', attrs=['reverse', 'dark'])
         print()
         print(colored_slack_bot)
-        print(f'{message}\n{timer}') if timer else print("Check-in feito!\nTRAVA DE SEGURANÇA ATIVADA PRA EVITAR VÁRIOS CHECKINS, DENTRO DE 30 MINS SEU TIMER VOLTARÁ")
+        print(f'{message}\n{timer}') if show_timer else print("Check-in feito!\nTRAVA DE SEGURANÇA ATIVADA PRA EVITAR VÁRIOS CHECK-INS\nDENTRO DE 30 MINS SEU TIMER VOLTARÁ")
 
 
 
@@ -82,7 +82,7 @@ class Bot:
     def time_left(is_coach = False, coach_time = ""):
         
         if is_coach: 
-            if 9 < int(datetime.datetime.now().strftime("%H")) < int(coach_time.split(":")[0]):
+            if 9 <= int(datetime.datetime.now().strftime("%H")) < int(coach_time.split(":")[0]):
                 hours, minutes, seconds = Bot.calculate_time(coach_time)
                 Bot.terminal_countdown(hours, minutes, seconds, True)
                 
@@ -96,7 +96,7 @@ class Bot:
                 Bot.terminal_countdown(hours, minutes, seconds, True)
 
         elif not is_coach:    
-            if 9 < int(datetime.datetime.now().strftime("%H")) < 14:
+            if 9 <= int(datetime.datetime.now().strftime("%H")) < 14:
                 hours, minutes, seconds = Bot.calculate_time(CHECKIN_TIME["EVENING"]["start"])
                 Bot.terminal_countdown(hours, minutes, seconds, True)
 
