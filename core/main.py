@@ -63,9 +63,18 @@ class Bot:
             self.write_checkin(text1, text2)
 
             sleep(1)
-            
+
+            hover = ActionChains(self.driver).move_to_element(last_child)
+            hover.perform()
+
+            ##silence thread notifications
+            option_button = self.driver.find_element_by_css_selector(".c-message_actions__button:last-child")
+            option_button.click()
+            silence_button = self.driver.find_element_by_css_selector(".c-menu__items > div:first-child")
+            silence_button.click()
+
             sleep(1800)
-            
+
         else:
             CLEAR()
 
