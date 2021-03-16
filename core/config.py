@@ -4,10 +4,6 @@ env = Env()
 env.read_env()
 
 #SLACK
-COACH = env('COACH')
-
-DEV = env('SLACK_DEV_URL')
-
 CHECKIN_TIME = {
     "MORNING": {
         "start": env('CHECKIN_TIME_AM_INITIAL'),
@@ -19,6 +15,10 @@ CHECKIN_TIME = {
         }
     }
 
+COACH = env('COACH')
+SLACK_LINK = env('SLACK_LINK')
+SLACK_EMAIL = env('SLACK_EMAIL')
+SLACK_PASSWORD = env('SLACK_PASSWORD')
 
 #CANVAS
 CANVAS_LINK = env('CANVAS_LINK')

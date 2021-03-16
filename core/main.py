@@ -1,4 +1,4 @@
-from config import CHECKIN_TIME, DEV, COACH, CANVAS_LINK, CANVAS_EMAIL, CANVAS_PASSWORD, GECKODRIVER
+from config import CHECKIN_TIME, SLACK_LINK, SLACK_EMAIL, SLACK_PASSWORD, COACH, CANVAS_LINK, CANVAS_EMAIL, CANVAS_PASSWORD, GECKODRIVER
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.firefox.options import Options
@@ -59,9 +59,9 @@ class Bot:
         workspace_button.click()
 
         slack_email = self.driver.find_element_by_xpath('//*[@id="email"]')
-        slack_email.send_keys(CANVAS_EMAIL)
+        slack_email.send_keys(SLACK_EMAIL)
         slack_password = self.driver.find_element_by_xpath('//*[@id="password"]')
-        slack_password.send_keys(CANVAS_PASSWORD)
+        slack_password.send_keys(SLACK_PASSWORD)
         
         login_button = self.driver.find_element_by_xpath('//*[@id="signin_btn"]')
         login_button.click()
@@ -222,7 +222,7 @@ def bot_cicle():
     print('------------------')
     print("Sending message to check-in thread...")
     bot = Bot()
-    bot.login_slack(DEV)
+    bot.login_slack(SLACK_LINK)
     bot.find_thread(canvas_activity, 'Tudo ok')
 
     Time_handler.terminal_countdown()
