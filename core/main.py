@@ -1,21 +1,22 @@
-from time import sleep
-import datetime
-from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
+from config import FIREFOX_PROFILE, CHECKIN_TIME, DEV, COACH, CANVAS_LINK, CANVAS_EMAIL, CANVAS_PASSWORD
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.keys import Keys
-from os import system
-import pyfiglet
 from termcolor import colored, cprint
-from config import FIREFOX_PROFILE, CHECKIN_TIME, DEV, COACH
+from selenium import webdriver
+from time import sleep
+from os import system
+import datetime
+import pyfiglet
 
 
 CLEAR = lambda: system('clear')
 
 dt = datetime.datetime.today()
-TODAY = dt.day
 mydate = datetime.datetime.now()
+
+TODAY = dt.day
 MONTH = mydate.strftime("%b")
 
 
@@ -165,17 +166,15 @@ class Bot_activities:
     def __init__(self):
         options = Options()
         options.headless = True
-
         self.driver = webdriver.Firefox(options=options)
 
-
     def get_activities(self):
-        self.driver.get('https://alunos.kenzie.com.br/courses/33')
+        self.driver.get(CANVAS)
         email = self.driver.find_element_by_xpath('//*[@id="pseudonym_session_unique_id"]')
-        email.send_keys("csequeira153@gmail.com")
+        email.send_keys(CANVAS_EMAIL)
 
         password = self.driver.find_element_by_xpath('//*[@id="pseudonym_session_password"]')
-        password.send_keys("csmmc606089")
+        password.send_keys(CANVAS_PASSWORD)
         password.send_keys(Keys.ENTER)
 
         sleep(5)
