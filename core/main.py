@@ -17,8 +17,7 @@ dt = datetime.datetime.today()
 TODAY = dt.day
 mydate = datetime.datetime.now()
 MONTH = mydate.strftime("%b")
-print(type(TODAY))
-print(type(MONTH))
+
 
 class Bot:
     def __init__(self):
