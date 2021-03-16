@@ -1,4 +1,4 @@
-from config import FIREFOX_PROFILE, CHECKIN_TIME, DEV, COACH, CANVAS_LINK, CANVAS_EMAIL, CANVAS_PASSWORD
+from config import CHECKIN_TIME, DEV, COACH, CANVAS_LINK, CANVAS_EMAIL, CANVAS_PASSWORD, GECKODRIVER
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.firefox.options import Options
@@ -21,12 +21,11 @@ MONTH = mydate.strftime("%b")
 
 
 class Bot:
+
     def __init__(self):
         options = Options()
         options.headless = True
-        fp = webdriver.FirefoxProfile(FIREFOX_PROFILE)
-        self.driver = webdriver.Firefox(firefox_profile=fp, options=options)
-
+        self.driver = webdriver.Firefox(executable_path=GECKODRIVER, options=options)
 
     def write_checkin(self, text1, text2):
         input_to_write = self.driver.find_element_by_css_selector(
@@ -38,20 +37,43 @@ class Bot:
             problems = text2.capitalize()
             input_to_write.send_keys(What_im_doing + Keys.CONTROL + Keys.ENTER)
             input_to_write.send_keys(problems)
-            input_to_write.send_keys(Keys.ENTER)
+            # input_to_write.send_keys(Keys.ENTER)
 
         if text1 == "":
             input_to_write.send_keys("Check-in")
             input_to_write.send_keys(Keys.ENTER)
 
         CLEAR()
-        Time_handler.terminal_countdown()
 
-    def find_thread(self, link, text1 = "", text2 = ""):
 
+    def login_slack(self, link):
+        
         self.driver.get(link)
 
         sleep(2)
+        ##login
+        workspace_link = self.driver.find_element_by_xpath('//*[@id="domain"]')
+        workspace_link.send_keys('kenzieacademybrasil')
+        
+        workspace_button = self.driver.find_element_by_xpath('/html/body/main/div/div/div/div/div[2]/form/button')
+        workspace_button.click()
+
+        slack_email = self.driver.find_element_by_xpath('//*[@id="email"]')
+        slack_email.send_keys(CANVAS_EMAIL)
+        slack_password = self.driver.find_element_by_xpath('//*[@id="password"]')
+        slack_password.send_keys(CANVAS_PASSWORD)
+        
+        login_button = self.driver.find_element_by_xpath('//*[@id="signin_btn"]')
+        login_button.click()
+
+        sleep(2)
+
+        slack_web = self.driver.find_element_by_xpath('/html/body/div[6]/div/div/div/div/div/button')
+        slack_web.click()
+
+
+    def find_thread(self, text1 = "", text2 = ""):
+
 
         last_child = self.driver.find_element_by_css_selector(
             ".c-virtual_list__scroll_container > .c-virtual_list__item:last-child[role=listitem]")
@@ -71,16 +93,14 @@ class Bot:
 
             sleep(1)
 
+            ##silence thread notifications
             hover = ActionChains(self.driver).move_to_element(last_child)
             hover.perform()
-
-            ##silence thread notifications
             option_button = self.driver.find_element_by_css_selector(".c-message_actions__button:last-child")
             option_button.click()
             silence_button = self.driver.find_element_by_css_selector(".c-menu__items > div:first-child")
             silence_button.click()
 
-            sleep(1800)
 
         else:
             CLEAR()
@@ -166,7 +186,7 @@ class Bot_activities:
     def __init__(self):
         options = Options()
         options.headless = True
-        self.driver = webdriver.Firefox(options=options)
+        self.driver = webdriver.Firefox(executable_path=GECKODRIVER, options=options)
 
     def get_activities(self):
         self.driver.get(CANVAS_LINK)
@@ -190,16 +210,33 @@ class Bot_activities:
         for_today = [activity.text for activity in all_sprints if f'{MONTH} {TODAY}' in activity.text]
 
         doing = for_today[0].split("\n")
-        print(str(doing[0]))
+
         return "Revendo conceitos" if len(for_today) == 0 else str(doing[0])
 
-def main():
+def bot_cicle():
+    print("Check-in Time!")
+    print('------------------')
+    print("Getting activity for the check-in...")
+    bot_activities = Bot_activities()
+    canvas_activity = bot_activities.get_activities()
+    print('------------------')
+    print("Sending message to check-in thread...")
+    bot = Bot()
+    bot.login_slack(DEV)
+    bot.find_thread(canvas_activity, 'Tudo ok')
 
-    coach = Input_handler.coach_verify()
+    Time_handler.terminal_countdown()
+    sleep(1800)
+
+def main():
+    coach = False
+
+    if COACH != '':
+        coach = Input_handler.coach_verify()
     if coach:
         coach_time = Input_handler.coach_time()
-    print('--------------')
-    time_left = input('Gostaria de um countdown: (y/n)')
+
+    time_left = input('Countdown for check-in time? (y/n) ')
 
     while True:
         
@@ -216,30 +253,25 @@ def main():
             if (
                     coach_time < datetime.datetime.now().strftime("%H:%M:%S") < coach_time.replace("0", "1", 2)
             ):
+                # bot = Bot()
+                # bot.find_thread(COACH)
                 print("Coach check-in Time!")
                 bot = Bot()
-                bot.find_thread(COACH)
+                bot.login_slack(COACH)
+                bot.find_thread()
+
             if (
                     CHECKIN_TIME["MORNING"]["start"] < datetime.datetime.now().strftime("%H:%M:%S") < CHECKIN_TIME["MORNING"]["end"]
                     or CHECKIN_TIME["EVENING"]["start"] < datetime.datetime.now().strftime("%H:%M:%S") < CHECKIN_TIME["EVENING"]["end"]
             ):
-                print("Check-in Time!")
-                bot = Bot()
-                bot.find_thread(DEV, doing, doubts)
+                bot_cicle()
 
         else:
             if (
                     CHECKIN_TIME["MORNING"]["start"] < datetime.datetime.now().strftime("%H:%M:%S") < CHECKIN_TIME["MORNING"]["end"]
                     or CHECKIN_TIME["EVENING"]["start"] < datetime.datetime.now().strftime("%H:%M:%S") < CHECKIN_TIME["EVENING"]["end"]
             ):
-                print("Check-in Time!")
-                print("Getting activity for the check-in...")
-                bot_activities = Bot_activities()
-                doing_canvas = bot_activities.get_activities()
-
-                print("Sending message to check-in thread...")
-                bot = Bot()
-                bot.find_thread(DEV, doing_canvas, 'Tudo ok')
-
+                bot_cicle()  
+                
 if __name__ == "__main__":
     main()
