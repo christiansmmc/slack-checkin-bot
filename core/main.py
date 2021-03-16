@@ -169,7 +169,7 @@ class Bot_activities:
         self.driver = webdriver.Firefox(options=options)
 
     def get_activities(self):
-        self.driver.get(CANVAS)
+        self.driver.get(CANVAS_LINK)
         email = self.driver.find_element_by_xpath('//*[@id="pseudonym_session_unique_id"]')
         email.send_keys(CANVAS_EMAIL)
 
@@ -179,15 +179,10 @@ class Bot_activities:
 
         sleep(5)
 
-        closed_tabs = self.driver.find_elements_by_class_name('collapsed_module')
+        open_tabs = self.driver.find_elements_by_class_name('collapsed_module')
         
-        if len([tab for tab in closed_tabs]) >= 3:
-
-            open_tabs = self.driver.find_elements_by_xpath('//*[@id="context_modules"]/div')
-            
-            for tab in open_tabs:
-                tab.click()
-            print('abertas')
+        for tab in open_tabs:
+            tab.click()
 
         sleep(1)
         
@@ -195,7 +190,7 @@ class Bot_activities:
         for_today = [activity.text for activity in all_sprints if f'{MONTH} {TODAY}' in activity.text]
 
         doing = for_today[0].split("\n")
-        self.driver.quit()
+        print(str(doing[0]))
         return "Revendo conceitos" if len(for_today) == 0 else str(doing[0])
 
 def main():
@@ -242,7 +237,7 @@ def main():
                 bot_activities = Bot_activities()
                 doing_canvas = bot_activities.get_activities()
 
-                print("Sending message to thread...")
+                print("Sending message to check-in thread...")
                 bot = Bot()
                 bot.find_thread(DEV, doing_canvas, 'Tudo ok')
 
