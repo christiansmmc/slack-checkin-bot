@@ -13,12 +13,19 @@ from config import FIREFOX_PROFILE, CHECKIN_TIME, DEV, COACH
 
 CLEAR = lambda: system('clear')
 
+dt = datetime.datetime.today()
+TODAY = dt.day
+mydate = datetime.datetime.now()
+MONTH = mydate.strftime("%b")
+print(type(TODAY))
+print(type(MONTH))
+
 class Bot:
     def __init__(self):
         options = Options()
         options.headless = True
         fp = webdriver.FirefoxProfile(FIREFOX_PROFILE)
-        self.driver = webdriver.Firefox(fp, options=options)
+        self.driver = webdriver.Firefox(firefox_profile=fp, options=options)
 
 
     def write_checkin(self, text1, text2):
@@ -155,15 +162,49 @@ class Time_handler:
                 Time_handler.terminal_countdown(hours, minutes, seconds, True)
 
 
+class Bot_activities:
+    def __init__(self):
+        options = Options()
+        options.headless = True
+
+        self.driver = webdriver.Firefox(options=options)
+
+
+    def get_activities(self):
+        self.driver.get('https://alunos.kenzie.com.br/courses/33')
+        email = self.driver.find_element_by_xpath('//*[@id="pseudonym_session_unique_id"]')
+        email.send_keys("csequeira153@gmail.com")
+
+        password = self.driver.find_element_by_xpath('//*[@id="pseudonym_session_password"]')
+        password.send_keys("csmmc606089")
+        password.send_keys(Keys.ENTER)
+
+        sleep(5)
+
+        closed_tabs = self.driver.find_elements_by_class_name('collapsed_module')
+        
+        if len([tab for tab in closed_tabs]) >= 3:
+
+            open_tabs = self.driver.find_elements_by_xpath('//*[@id="context_modules"]/div')
+            
+            for tab in open_tabs:
+                tab.click()
+            print('abertas')
+
+        sleep(1)
+        
+        all_sprints = self.driver.find_elements_by_class_name('ig-info')
+        for_today = [activity.text for activity in all_sprints if f'{MONTH} {TODAY}' in activity.text]
+
+        doing = for_today[0].split("\n")
+        self.driver.quit()
+        return "Revendo conceitos" if len(for_today) == 0 else str(doing[0])
 
 def main():
 
     coach = Input_handler.coach_verify()
     if coach:
         coach_time = Input_handler.coach_time()
-
-    doing, doubts = Input_handler.student_questions()
-
     print('--------------')
     time_left = input('Gostaria de um countdown: (y/n)')
 
@@ -199,8 +240,13 @@ def main():
                     or CHECKIN_TIME["EVENING"]["start"] < datetime.datetime.now().strftime("%H:%M:%S") < CHECKIN_TIME["EVENING"]["end"]
             ):
                 print("Check-in Time!")
+                print("Getting activity for the check-in...")
+                bot_activities = Bot_activities()
+                doing_canvas = bot_activities.get_activities()
+
+                print("Sending message to thread...")
                 bot = Bot()
-                bot.find_thread(DEV, doing, doubts)
+                bot.find_thread(DEV, doing_canvas, 'Tudo ok')
 
 if __name__ == "__main__":
     main()
