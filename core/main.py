@@ -9,7 +9,10 @@ from time import sleep
 from os import system
 import datetime
 import pyfiglet
+import sys
+import os
 
+# sys.path.append('../gecko')
 
 CLEAR = lambda: system('clear')
 
@@ -18,14 +21,15 @@ mydate = datetime.datetime.now()
 
 TODAY = dt.day
 MONTH = mydate.strftime("%b")
-
+PATH = os.path.realpath(__file__)
+PATH = PATH.replace('main.py', f'..\gecko\{GECKODRIVER}')
 
 class Bot:
 
     def __init__(self):
         options = Options()
         options.headless = True
-        self.driver = webdriver.Firefox(executable_path=GECKODRIVER, options=options)
+        self.driver = webdriver.Firefox(executable_path=PATH, options=options)
 
     def write_checkin(self, text1, text2):
         input_to_write = self.driver.find_element_by_css_selector(
@@ -37,7 +41,7 @@ class Bot:
             problems = text2.capitalize()
             input_to_write.send_keys(What_im_doing + Keys.CONTROL + Keys.ENTER)
             input_to_write.send_keys(problems)
-            # input_to_write.send_keys(Keys.ENTER)
+            input_to_write.send_keys(Keys.ENTER)
 
         if text1 == "":
             input_to_write.send_keys("Check-in")
@@ -186,7 +190,7 @@ class Bot_activities:
     def __init__(self):
         options = Options()
         options.headless = True
-        self.driver = webdriver.Firefox(executable_path=GECKODRIVER, options=options)
+        self.driver = webdriver.Firefox(executable_path=PATH, options=options)
 
     def get_activities(self):
         self.driver.get(CANVAS_LINK)
