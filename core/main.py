@@ -233,6 +233,8 @@ def bot_cicle():
 
 def main():
 
+    coach = False
+
     if COACH != '':
         coach = Input_handler.coach_verify()
     if coach:
