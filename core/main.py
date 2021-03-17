@@ -6,13 +6,10 @@ from selenium.webdriver.common.keys import Keys
 from termcolor import colored, cprint
 from selenium import webdriver
 from time import sleep
-from os import system
+from os import system, path
 import datetime
 import pyfiglet
 import sys
-import os
-
-# sys.path.append('../gecko')
 
 CLEAR = lambda: system('clear')
 
@@ -21,8 +18,8 @@ mydate = datetime.datetime.now()
 
 TODAY = dt.day
 MONTH = mydate.strftime("%b")
-PATH = os.path.realpath(__file__)
-PATH = PATH.replace('main.py', f'..\gecko\{GECKODRIVER}')
+PATH = path.realpath(__file__)
+PATH = PATH.replace('core/main.py', f'gecko/{GECKODRIVER}')
 
 class Bot:
 
@@ -55,12 +52,14 @@ class Bot:
         self.driver.get(link)
 
         sleep(2)
-        ##login
+
         workspace_link = self.driver.find_element_by_xpath('//*[@id="domain"]')
         workspace_link.send_keys('kenzieacademybrasil')
         
         workspace_button = self.driver.find_element_by_xpath('/html/body/main/div/div/div/div/div[2]/form/button')
         workspace_button.click()
+
+        sleep(2)
 
         slack_email = self.driver.find_element_by_xpath('//*[@id="email"]')
         slack_email.send_keys(SLACK_EMAIL)
@@ -233,12 +232,12 @@ def bot_cicle():
     sleep(1800)
 
 def main():
-    coach = False
 
     if COACH != '':
         coach = Input_handler.coach_verify()
     if coach:
         coach_time = Input_handler.coach_time()
+
 
     time_left = input('Countdown for check-in time? (y/n) ')
 
