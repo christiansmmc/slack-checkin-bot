@@ -71,7 +71,7 @@ class Bot:
 
         sleep(5)
 
-        slack_web = self.driver.find_element_by_xpath('/html/body/div[6]/div/div/div/div/div/button')
+        slack_web = self.driver.find_element_by_xpath('/html/body/div[6]/div/div/div/div/div/div/button')
         slack_web.click()
 
 
