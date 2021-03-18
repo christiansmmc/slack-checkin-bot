@@ -19,8 +19,8 @@ mydate = datetime.datetime.now()
 TODAY = dt.day
 MONTH = mydate.strftime("%b")
 PATH = path.realpath(__file__)
-PATH = PATH.replace('core/main.py', f'gecko/{GECKODRIVER}')
-
+PATH = PATH.replace('core/main.py', f'gecko/{GECKODRIVER}') and PATH.replace('core\main.py', f'gecko\{GECKODRIVER}')
+print(PATH)
 class Bot:
 
     def __init__(self):
@@ -38,7 +38,7 @@ class Bot:
             problems = text2.capitalize()
             input_to_write.send_keys(What_im_doing + Keys.CONTROL + Keys.ENTER)
             input_to_write.send_keys(problems)
-            input_to_write.send_keys(Keys.ENTER)
+            # input_to_write.send_keys(Keys.ENTER)
 
         if text1 == "":
             input_to_write.send_keys("Check-in")
