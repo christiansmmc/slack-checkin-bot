@@ -51,7 +51,7 @@ class Bot:
         
         self.driver.get(link)
 
-        sleep(2)
+        sleep(5)
 
         workspace_link = self.driver.find_element_by_xpath('//*[@id="domain"]')
         workspace_link.send_keys('kenzieacademybrasil')
@@ -59,7 +59,7 @@ class Bot:
         workspace_button = self.driver.find_element_by_xpath('/html/body/main/div/div/div/div/div[2]/form/button')
         workspace_button.click()
 
-        sleep(2)
+        sleep(5)
 
         slack_email = self.driver.find_element_by_xpath('//*[@id="email"]')
         slack_email.send_keys(SLACK_EMAIL)
@@ -69,7 +69,7 @@ class Bot:
         login_button = self.driver.find_element_by_xpath('//*[@id="signin_btn"]')
         login_button.click()
 
-        sleep(2)
+        sleep(5)
 
         slack_web = self.driver.find_element_by_xpath('/html/body/div[6]/div/div/div/div/div/button')
         slack_web.click()
@@ -207,7 +207,7 @@ class Bot_activities:
         for tab in open_tabs:
             tab.click()
 
-        sleep(1)
+        sleep(3)
         
         all_sprints = self.driver.find_elements_by_class_name('ig-info')
         for_today = [activity.text for activity in all_sprints if f'{MONTH} {TODAY}' in activity.text]
