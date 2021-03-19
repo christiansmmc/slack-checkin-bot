@@ -60,7 +60,7 @@ class Bot:
         workspace_button = self.driver.find_element_by_xpath('/html/body/main/div/div/div/div/div[2]/form/button')
         workspace_button.click()
 
-        sleep(5)
+        sleep(2)
 
         slack_email = self.driver.find_element_by_xpath('//*[@id="email"]')
         slack_email.send_keys(SLACK_EMAIL)
@@ -79,12 +79,15 @@ class Bot:
     def find_thread(self, text1 = "", text2 = ""):
 
 
-        last_child = self.driver.find_element_by_css_selector(
-            ".c-virtual_list__scroll_container > .c-virtual_list__item:last-child[role=listitem]")
+        slack_messages = self.driver.find_elements_by_css_selector(".c-message_kit__gutter")
 
-        if "Devs check-in" in last_child.text or "Coaches check-in" in last_child.text:
+        slack_checkin_to_send = [message for message in slack_messages if 'Devs check-in' in message.text or 'Coaches check-in' in message.text]
 
-            hover = ActionChains(self.driver).move_to_element(last_child)
+        slack_checkin_to_send.reverse()
+
+        if "hoje" in slack_checkin_to_send[0].text:
+
+            hover = ActionChains(self.driver).move_to_element(slack_checkin_to_send[0])
             hover.perform()
 
             thread_button = self.driver.find_element_by_css_selector(".c-message_actions__button:nth-child(2)")
@@ -98,7 +101,7 @@ class Bot:
             sleep(1)
 
             ##silence thread notifications
-            hover = ActionChains(self.driver).move_to_element(last_child)
+            hover = ActionChains(self.driver).move_to_element(slack_checkin_to_send[0])
             hover.perform()
             option_button = self.driver.find_element_by_css_selector(".c-message_actions__button:last-child")
             option_button.click()
@@ -212,21 +215,19 @@ class Bot_activities:
         
         all_sprints = self.driver.find_elements_by_class_name('ig-info')
         for_today = [activity.text for activity in all_sprints if f'{MONTH} {TODAY}' in activity.text]
-        
+
         if len(for_today) == 0:
             doing = "Revendo conceitos"
         else:
             doing = for_today[0].split("\n")
 
-        close_tabs = self.driver.find_elements_by_class_name('icon-mini-arrow-down:not(:last-child)')
+        close_tabs = self.driver.find_elements_by_class_name('icon-mini-arrow-down')
 
-        for i, tab in enumerate(close_tabs, 1):
-            if i < len(close_tabs):
+        for tab in close_tabs:
+            if tab.is_displayed():
                 tab.click()
 
-        print(doing)
-
-        return doing
+        return doing[0]
 
 def bot_cicle():
     print("Check-in Time!")
