@@ -19,8 +19,9 @@ mydate = datetime.datetime.now()
 TODAY = dt.day
 MONTH = mydate.strftime("%b")
 PATH = path.realpath(__file__)
-PATH = PATH.replace('core/main.py', f'gecko/{GECKODRIVER}') and PATH.replace('core\main.py', f'gecko\{GECKODRIVER}')
-print(PATH)
+PATH = PATH.replace('core/main.py', f'gecko/{GECKODRIVER}')
+PATH = PATH.replace('core\main.py', f'gecko\{GECKODRIVER}')
+
 class Bot:
 
     def __init__(self):
@@ -38,7 +39,7 @@ class Bot:
             problems = text2.capitalize()
             input_to_write.send_keys(What_im_doing + Keys.CONTROL + Keys.ENTER)
             input_to_write.send_keys(problems)
-            # input_to_write.send_keys(Keys.ENTER)
+            input_to_write.send_keys(Keys.ENTER)
 
         if text1 == "":
             input_to_write.send_keys("Check-in")
@@ -211,10 +212,21 @@ class Bot_activities:
         
         all_sprints = self.driver.find_elements_by_class_name('ig-info')
         for_today = [activity.text for activity in all_sprints if f'{MONTH} {TODAY}' in activity.text]
+        
+        if len(for_today) == 0:
+            doing = "Revendo conceitos"
+        else:
+            doing = for_today[0].split("\n")
 
-        doing = for_today[0].split("\n")
+        close_tabs = self.driver.find_elements_by_class_name('icon-mini-arrow-down:not(:last-child)')
 
-        return "Revendo conceitos" if len(for_today) == 0 else str(doing[0])
+        for i, tab in enumerate(close_tabs, 1):
+            if i < len(close_tabs):
+                tab.click()
+
+        print(doing)
+
+        return doing
 
 def bot_cicle():
     print("Check-in Time!")
@@ -258,8 +270,6 @@ def main():
             if (
                     coach_time < datetime.datetime.now().strftime("%H:%M:%S") < coach_time.replace("0", "1", 2)
             ):
-                # bot = Bot()
-                # bot.find_thread(COACH)
                 print("Coach check-in Time!")
                 bot = Bot()
                 bot.login_slack(COACH)
