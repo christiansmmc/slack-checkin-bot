@@ -85,28 +85,55 @@ class Bot:
 
         slack_checkin_to_send.reverse()
 
-        if "hoje" in slack_checkin_to_send[0].text:
+        if int(datetime.datetime.now().strftime("%H")) == 9:
 
-            hover = ActionChains(self.driver).move_to_element(slack_checkin_to_send[0])
-            hover.perform()
+            if "9" in slack_checkin_to_send[0].text:
 
-            thread_button = self.driver.find_element_by_css_selector(".c-message_actions__button:nth-child(2)")
+                hover = ActionChains(self.driver).move_to_element(slack_checkin_to_send[0])
+                hover.perform()
 
-            thread_button.click()
+                thread_button = self.driver.find_element_by_css_selector(".c-message_actions__button:nth-child(2)")
 
-            sleep(2)
+                thread_button.click()
 
-            self.write_checkin(text1, text2)
+                sleep(2)
 
-            sleep(1)
+                self.write_checkin(text1, text2)
 
-            ##silence thread notifications
-            hover = ActionChains(self.driver).move_to_element(slack_checkin_to_send[0])
-            hover.perform()
-            option_button = self.driver.find_element_by_css_selector(".c-message_actions__button:last-child")
-            option_button.click()
-            silence_button = self.driver.find_element_by_css_selector(".c-menu__items > div:first-child")
-            silence_button.click()
+                sleep(1)
+
+                ##silence thread notifications
+                hover = ActionChains(self.driver).move_to_element(slack_checkin_to_send[0])
+                hover.perform()
+                option_button = self.driver.find_element_by_css_selector(".c-message_actions__button:last-child")
+                option_button.click()
+                silence_button = self.driver.find_element_by_css_selector(".c-menu__items > div:first-child")
+                silence_button.click()
+
+        if int(datetime.datetime.now().strftime("%H")) == 14:
+
+            if "14" in slack_checkin_to_send[0].text:
+
+                hover = ActionChains(self.driver).move_to_element(slack_checkin_to_send[0])
+                hover.perform()
+
+                thread_button = self.driver.find_element_by_css_selector(".c-message_actions__button:nth-child(2)")
+
+                thread_button.click()
+
+                sleep(2)
+
+                self.write_checkin(text1, text2)
+
+                sleep(1)
+
+                ##silence thread notifications
+                hover = ActionChains(self.driver).move_to_element(slack_checkin_to_send[0])
+                hover.perform()
+                option_button = self.driver.find_element_by_css_selector(".c-message_actions__button:last-child")
+                option_button.click()
+                silence_button = self.driver.find_element_by_css_selector(".c-menu__items > div:first-child")
+                silence_button.click()
 
 
         else:
