@@ -1,7 +1,8 @@
 from config import CHECKIN_TIME, SLACK_LINK, SLACK_EMAIL, SLACK_PASSWORD, COACH, CANVAS_LINK, CANVAS_EMAIL, CANVAS_PASSWORD, GECKODRIVER
 from selenium.webdriver.firefox.firefox_binary import FirefoxBinary
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.options import Options as options_f
+from selenium.webdriver.chrome.options import Options as options_c
 from selenium.webdriver.common.keys import Keys
 from termcolor import colored, cprint
 from selenium import webdriver
@@ -25,9 +26,18 @@ PATH = PATH.replace('core\main.py', f'gecko\{GECKODRIVER}')
 class Bot:
 
     def __init__(self):
-        options = Options()
+        # FIREFOX DRIVER
+        options = options_f()
         options.headless = True
         self.driver = webdriver.Firefox(executable_path=PATH, options=options)
+
+        #CHROME DRIVER
+        # chrome_options = options_c()
+        # chrome_options.add_argument("--disable-extensions")
+        # chrome_options.add_argument("--disable-gpu")
+        # chrome_options.add_argument("--headless")
+        # chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        # self.driver = webdriver.Chrome(PATH, options=chrome_options)
 
     def write_checkin(self, text1, text2):
         input_to_write = self.driver.find_element_by_css_selector(
@@ -52,9 +62,10 @@ class Bot:
         
         self.driver.get(link)
 
-        sleep(5)
+        sleep(2)
 
         workspace_link = self.driver.find_element_by_xpath('//*[@id="domain"]')
+
         workspace_link.send_keys('kenzieacademybrasil')
         
         workspace_button = self.driver.find_element_by_xpath('/html/body/main/div/div/div/div/div[2]/form/button')
@@ -70,7 +81,7 @@ class Bot:
         login_button = self.driver.find_element_by_xpath('//*[@id="signin_btn"]')
         login_button.click()
 
-        sleep(5)
+        sleep(2)
 
         slack_web = self.driver.find_element_by_xpath('/html/body/div[6]/div/div/div/div/div/div/button')
         slack_web.click()
@@ -218,9 +229,18 @@ class Time_handler:
 
 class Bot_activities:
     def __init__(self):
-        options = Options()
+        # FIREFOX DRIVER
+        options = options_f()
         options.headless = True
         self.driver = webdriver.Firefox(executable_path=PATH, options=options)
+
+        #CHROME DRIVER
+        # chrome_options = options_c()
+        # chrome_options.add_argument("--disable-extensions")
+        # chrome_options.add_argument("--disable-gpu")
+        # chrome_options.add_argument("--headless")
+        # chrome_options.add_experimental_option('excludeSwitches', ['enable-logging'])
+        # self.driver = webdriver.Chrome(PATH, options=chrome_options)
 
     def get_activities(self):
         self.driver.get(CANVAS_LINK)
@@ -231,14 +251,16 @@ class Bot_activities:
         password.send_keys(CANVAS_PASSWORD)
         password.send_keys(Keys.ENTER)
 
-        sleep(5)
+        sleep(2)
 
         open_tabs = self.driver.find_elements_by_class_name('collapsed_module')
-        
+        open_tabs.reverse()
+
         for tab in open_tabs:
             tab.click()
+            sleep(0.2)
 
-        sleep(3)
+        sleep(1)
         
         all_sprints = self.driver.find_elements_by_class_name('ig-info')
         for_today = [activity.text for activity in all_sprints if f'{MONTH} {TODAY}' in activity.text]
@@ -249,10 +271,12 @@ class Bot_activities:
             doing = for_today[0].split("\n")
 
         close_tabs = self.driver.find_elements_by_class_name('icon-mini-arrow-down')
+        close_tabs.reverse()
 
         for tab in close_tabs:
             if tab.is_displayed():
                 tab.click()
+                sleep(0.2)
 
         return doing[0]
 
@@ -266,7 +290,7 @@ def bot_cicle():
     print("Sending message to check-in thread...")
     bot = Bot()
     bot.login_slack(SLACK_LINK)
-    bot.find_thread(canvas_activity, 'Tudo ok')
+    bot.find_thread('canvas_activity', 'Tudo ok')
 
     Time_handler.terminal_countdown()
     sleep(1800)
