@@ -10,14 +10,16 @@ Apenas para Linux e Windows 10
 
 ## Instalação
 
-1. Instale as dependências 
+1. Crie e entre em um ambiente virtual na pasta raiz
+---
+2. Instale as dependências 
    ```sh
    pip install -r requirements.txt
    ```
 ---
-2. Crie um .env na pasta core com suas preferências, usando como exemplo o .env.example:
+3. Crie um .env na pasta core com suas preferências, usando como exemplo o .env.example:
 ---
-3. Rode o script 
+4. Rode o script 
     ```sh
     python main.py
     ```
