@@ -293,7 +293,7 @@ def bot_cicle():
     print("Sending message to check-in thread...")
     bot = Bot()
     bot.login_slack(SLACK_LINK)
-    bot.find_thread('canvas_activity', 'Tudo ok')
+    bot.find_thread(canvas_activity, 'Tudo ok')
 
     Time_handler.terminal_countdown()
     sleep(1800)
