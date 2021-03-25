@@ -4,18 +4,17 @@ Bot feito em python para automatizar o check-in feito no slack da Kenzie Academy
 Check-in automático tanto para as 09:00 como para as 14:00  
 No caso do dev ser coach, o check-in é feito de forma automatica tanto no início do horário de coach quanto no check-in normal da turma  
   
-Only for Linux  
+Apenas para Linux e Windows 10
 
 ## Instalação
 
-1. ```pip install selenium```
-2. ```pip install pyfiglet```
-3. ```pip install termcolor```   
+1. Instale as dependências 
+   ```sh
+   pip install -r requirements.txt
+   ```
 ---
-4. Baixar o [Geckodriver](https://github.com/mozilla/geckodriver/releases) e colocar o que extraiu na pasta usr/bin  
----
-5. Configurar o core/main.py de acordo com suas preferências:  
-    *Alterar o COACH com o link da página do check-in de coach, caso seja coach  
-    *Alterar o DEV com o link da página do check-in de dev  
-    *Alterar o FIREFOX_PROFILE com o local de onde seu perfil do firefox esta (o firefox deve estar logado no slack)  
-    *No Firefox digite about:profiles para verificar o local do perfil  
+2. Crie um .env na pasta core com suas preferências, usando como exemplo o .env.example:
+3. Rode o script 
+    ```sh
+    python main.py
+    ```
