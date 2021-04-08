@@ -349,7 +349,7 @@ class Bot_activities:
         if len(for_today) == 0:
             doing = "Revendo conceitos"
         else:
-            doing = for_today[0].split("\n")
+            doing = for_today[0].split("\n")[0]
 
         close_tabs = self.driver.find_elements_by_class_name("icon-mini-arrow-down")
         close_tabs.reverse()
@@ -359,7 +359,7 @@ class Bot_activities:
                 tab.click()
                 sleep(0.2)
 
-        return doing[0]
+        return doing
 
 
 def bot_cicle():
