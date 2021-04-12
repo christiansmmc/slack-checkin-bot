@@ -86,11 +86,6 @@ class Bot:
 
         sleep(2)
 
-        slack_web = self.driver.find_element_by_xpath(
-            "/html/body/div[6]/div/div/div/div/div/div/button"
-        )
-        slack_web.click()
-
     def find_thread(self, text1="", text2=""):
 
         slack_messages = self.driver.find_elements_by_css_selector(
