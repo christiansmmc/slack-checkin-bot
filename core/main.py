@@ -29,17 +29,17 @@ PATH = PATH.replace("core\main.py", f"gecko\{GECKODRIVER}")
 class Bot:
     def __init__(self):
         # FIREFOX DRIVER
-        options = options_f()
-        options.headless = True
-        self.driver = webdriver.Firefox(executable_path=PATH, options=options)
+        # options = options_f()
+        # options.headless = True
+        # self.driver = webdriver.Firefox(executable_path=PATH, options=options)
 
         # CHROME DRIVER
-        # chrome_options = options_c()
-        # chrome_options.add_argument("--disable-extensions")
-        # chrome_options.add_argument("--disable-gpu")
-        # chrome_options.add_argument("--headless")
-        # chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
-        # self.driver = webdriver.Chrome(PATH, options=chrome_options)
+        chrome_options = options_c()
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        self.driver = webdriver.Chrome(PATH, options=chrome_options)
 
     def write_checkin(self, text1, text2):
         input_to_write = self.driver.find_element_by_css_selector(
@@ -100,9 +100,15 @@ class Bot:
 
         slack_checkin_to_send.reverse()
 
-        if int(datetime.datetime.now().strftime("%H")) == 9:
+        if (
+            datetime.datetime.now().strftime("%H")
+            == CHECKIN_TIME["MORNING"]["start"][0:2]
+        ):
 
-            if "9" in slack_checkin_to_send[0].text:
+            if (
+                int(CHECKIN_TIME["EVENING"]["start"][0:2])
+                in slack_checkin_to_send[0].text
+            ):
                 hover = ActionChains(self.driver).move_to_element(
                     slack_checkin_to_send[0]
                 )
@@ -134,9 +140,12 @@ class Bot:
                 )
                 silence_button.click()
 
-        if int(datetime.datetime.now().strftime("%H")) == 14:
+        if (
+            datetime.datetime.now().strftime("%H")
+            == CHECKIN_TIME["EVENING"]["start"][0:2]
+        ):
 
-            if "14" in slack_checkin_to_send[0].text:
+            if CHECKIN_TIME["EVENING"]["start"][0:2] in slack_checkin_to_send[0].text:
                 hover = ActionChains(self.driver).move_to_element(
                     slack_checkin_to_send[0]
                 )
@@ -291,17 +300,17 @@ class Time_handler:
 class Bot_activities:
     def __init__(self):
         # FIREFOX DRIVER
-        options = options_f()
-        options.headless = True
-        self.driver = webdriver.Firefox(executable_path=PATH, options=options)
+        # options = options_f()
+        # options.headless = True
+        # self.driver = webdriver.Firefox(executable_path=PATH, options=options)
 
         # CHROME DRIVER
-        # chrome_options = options_c()
-        # chrome_options.add_argument("--disable-extensions")
-        # chrome_options.add_argument("--disable-gpu")
-        # chrome_options.add_argument("--headless")
-        # chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
-        # self.driver = webdriver.Chrome(PATH, options=chrome_options)
+        chrome_options = options_c()
+        chrome_options.add_argument("--disable-extensions")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--headless")
+        chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
+        self.driver = webdriver.Chrome(PATH, options=chrome_options)
 
     def get_activities(self):
 
@@ -340,7 +349,7 @@ class Bot_activities:
             for activity in all_sprints
             if f"{MONTH} {TODAY}" in activity.text
         ]
-        print(for_today)
+
         if len(for_today) == 0:
             doing = "Revendo conceitos"
         else:
@@ -363,6 +372,8 @@ def bot_cicle():
     print("Getting activity for the check-in...")
     bot_activities = Bot_activities()
     canvas_activity = bot_activities.get_activities()
+    print("------------------")
+    print(f"Activity for the day: {canvas_activity}")
     print("------------------")
     print("Sending message to check-in thread...")
     bot = Bot()
