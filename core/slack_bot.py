@@ -75,44 +75,36 @@ class Bot:
         sleep(2)
 
     def find_thread(self, text1="", text2=""):
+        checkin_done = False
 
-        slack_messages = self.driver.find_elements_by_css_selector(
-            ".c-message_kit__gutter"
-        )
+        while not checkin_done:
 
-        slack_checkin_to_send = [
-            message
-            for message in slack_messages
-            if "Devs check-in" in message.text or "Coaches check-in" in message.text
-        ]
+            slack_messages = self.driver.find_elements_by_css_selector(
+                ".c-message_kit__gutter"
+            )
 
-        slack_checkin_to_send.reverse()
+            slack_checkin_to_send = [
+                message
+                for message in slack_messages
+                if "Devs check-in" in message.text or "Coaches check-in" in message.text
+            ]
 
-        if (
-            datetime.datetime.now().strftime("%H")
-            == CHECKIN_TIME["MORNING"]["start"][0:2]
-        ):
+            slack_checkin_to_send.reverse()
 
             if (
                 CHECKIN_TIME["MORNING"]["start"][0:2].lstrip("0")
                 in slack_checkin_to_send[0].text
             ):
-
                 hover = ActionChains(self.driver).move_to_element(
                     slack_checkin_to_send[0]
                 )
                 hover.perform()
-
                 thread_button = self.driver.find_element_by_css_selector(
                     ".c-message_actions__button:nth-child(2)"
                 )
-
                 thread_button.click()
-
                 sleep(2)
-
                 self.write_checkin(text1, text2)
-
                 sleep(1)
 
                 # silence thread notifications
@@ -128,13 +120,9 @@ class Bot:
                     ".c-menu__items > div:first-child"
                 )
                 silence_button.click()
+                checkin_done = True
 
-        elif (
-            datetime.datetime.now().strftime("%H")
-            == CHECKIN_TIME["EVENING"]["start"][0:2]
-        ):
-
-            if (
+            elif (
                 CHECKIN_TIME["EVENING"]["start"][0:2].lstrip("0")
                 in slack_checkin_to_send[0].text
             ):
@@ -142,17 +130,12 @@ class Bot:
                     slack_checkin_to_send[0]
                 )
                 hover.perform()
-
                 thread_button = self.driver.find_element_by_css_selector(
                     ".c-message_actions__button:nth-child(2)"
                 )
-
                 thread_button.click()
-
                 sleep(2)
-
                 self.write_checkin(text1, text2)
-
                 sleep(1)
 
                 # silence thread notifications
@@ -168,10 +151,9 @@ class Bot:
                     ".c-menu__items > div:first-child"
                 )
                 silence_button.click()
+                checkin_done = True
 
-        else:
-            CLEAR()
-
-            print("Check-in não encontrado\nTentando novamente em 20 segundos...")
-
-            sleep(20)
+            else:
+                CLEAR()
+                print("Check-in não encontrado\nTentando novamente em 20 segundos...")
+                sleep(20)
