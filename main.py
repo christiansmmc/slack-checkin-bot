@@ -32,6 +32,7 @@ PATH = PATH.replace("core\main.py", f"gecko\{GECKODRIVER}")
 
 
 def bot_cicle():
+    CLEAR()
     print("Check-in Time!")
     print("------------------")
     print("Getting activity for the check-in...")
