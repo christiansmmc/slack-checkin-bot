@@ -24,14 +24,14 @@ class Bot:
         # CHROME DRIVER OPTIONS
         chrome_options = options_c()
         chrome_options.add_argument("--disable-extensions")
-        # chrome_options.add_argument("--disable-gpu")
-        # chrome_options.add_argument("--headless")
+        chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--headless")
         chrome_options.add_experimental_option("excludeSwitches", ["enable-logging"])
         self.driver = webdriver.Chrome(PATH, options=chrome_options)
 
     def write_checkin(self, text1, text2):
         input_to_write = self.driver.find_element_by_css_selector(
-            "#G018D3ASP88-1621512014\.010000-thread-list_input > div > div.p-threads_footer__input.p-message_input_unstyled > div > div > div.c-texty_input_unstyled__container.c-texty_input_unstyled__container--size_medium.c-texty_input_unstyled__container--multi_line.c-texty_input_unstyled__container--no_actions > div > div.ql-editor"
+            '//*[@id="G018D3ASP88-1622826014.077800-thread-list-threads-flexpane_input"]/div/div[1]/div/div/div[1]/div/div[1]/p'
         )
 
         if text1 != "":
