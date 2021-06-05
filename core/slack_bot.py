@@ -31,8 +31,7 @@ class Bot:
 
     def write_checkin(self, text1, text2):
         input_to_write = self.driver.find_element_by_css_selector(
-            '//*[@id="G018D3ASP88-1622826014.077800-thread-list-threads-flexpane_input"]/div/div[1]/div/div/div[1]/div/div[1]/p'
-        )
+            '#G018D3ASP88-1622826014\.077800-thread-list-threads-flexpane_input > div > div.p-threads_footer__input.p-message_input_unstyled > div > div > div.c-texty_input_unstyled__container.c-texty_input_unstyled__container--size_medium.c-texty_input_unstyled__container--multi_line.c-texty_input_unstyled__container--no_actions > div > div.ql-editor.ql-blank' )
 
         if text1 != "":
             what_im_doing = f"1. {text1.capitalize()}"
