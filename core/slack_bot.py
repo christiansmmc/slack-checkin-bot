@@ -30,19 +30,20 @@ class Bot:
         self.driver = webdriver.Chrome(PATH, options=chrome_options)
 
     def write_checkin(self, text1, text2):
-        input_to_write = self.driver.find_element_by_xpath(
-            '//*[@id="G018D3ASP88-1623067214.088200-thread-list-threads-flexpane_input"]/div/div[1]/div/div/div[1]/div/div[1]'
-        )
+        input_to_write = self.driver.find_elements_by_class_name("ql-editor, ql-blank")
+
+        input_to_write.reverse()
+
         if text1 != "":
             what_im_doing = f"1. {text1.capitalize()}"
             problems = text2.capitalize()
-            input_to_write.send_keys(what_im_doing + Keys.CONTROL + Keys.ENTER)
-            input_to_write.send_keys(problems)
-            input_to_write.send_keys(Keys.ENTER)
+            input_to_write[0].send_keys(what_im_doing + Keys.CONTROL + Keys.ENTER)
+            input_to_write[0].send_keys(problems)
+            input_to_write[0].send_keys(Keys.ENTER)
 
         if text1 == "":
-            input_to_write.send_keys("Check-in")
-            input_to_write.send_keys(Keys.ENTER)
+            input_to_write[0].send_keys("Check-in")
+            input_to_write[0].send_keys(Keys.ENTER)
 
         CLEAR()
 
@@ -156,3 +157,7 @@ class Bot:
                 CLEAR()
                 print("Check-in não encontrado\nTentando novamente em 20 segundos...")
                 sleep(20)
+
+
+## /html/body/div[2]/div/div[2]/div[5]/div/div/div[2]/div/div[2]/div/div[2]/div[1]/div/div/div[9]/div/div[1]/div/div/div[1]/div/div[1]/p
+## /html/body/div[2]/div/div[2]/div[5]/div/div/div[2]/div/div[2]/div/div[2]/div[1]/div/div/div[12]/div/div[1]/div/div/div[1]/div/div[1]/p
