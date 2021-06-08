@@ -9,6 +9,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium import webdriver
 from time import sleep
 from os import system, path
+import random
 import datetime
 
 CLEAR = lambda: system("clear")
@@ -69,6 +70,7 @@ class Bot_activities:
         if len(for_today) == 0:
             doing = "Revendo conceitos"
         else:
+            random.shuffle(for_today)
             doing = for_today[0].split("\n")[0]
 
         close_tabs = self.driver.find_elements_by_class_name("icon-mini-arrow-down")
