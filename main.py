@@ -27,8 +27,8 @@ from core.time_handler import Time_handler
 
 CLEAR = lambda: system("clear")
 PATH = path.realpath(__file__)
-PATH = PATH.replace("core/main.py", f"gecko/{GECKODRIVER}")
-PATH = PATH.replace("core\main.py", f"gecko\{GECKODRIVER}")
+PATH = PATH.replace("core/main.py", f"chrome_driver/{GECKODRIVER}")
+PATH = PATH.replace("core\main.py", f"chrome_driver\{GECKODRIVER}")
 
 
 def bot_cicle():

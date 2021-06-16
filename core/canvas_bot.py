@@ -14,8 +14,8 @@ import datetime
 
 CLEAR = lambda: system("clear")
 PATH = path.realpath(__file__)
-PATH = PATH.replace("core/canvas_bot.py", f"gecko/{GECKODRIVER}")
-PATH = PATH.replace("core\canvas_bot.py", f"gecko\{GECKODRIVER}")
+PATH = PATH.replace("core/canvas_bot.py", f"chrome_driver/{GECKODRIVER}")
+PATH = PATH.replace("core\canvas_bot.py", f"chrome_driver\{GECKODRIVER}")
 
 
 class Bot_activities:
