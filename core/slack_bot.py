@@ -99,8 +99,8 @@ class Bot:
                     slack_checkin_to_send[0]
                 )
                 hover.perform()
-                thread_button = self.driver.find_element_by_css_selector(
-                    ".c-message_actions__button:nth-child(2)"
+                thread_button = self.driver.find_element_by_xpath(
+                    "/html/body/div[2]/div/div[2]/div[3]/div/div[2]/div[1]/div/div[2]/div/div[2]/div[1]/div/div/div[10]/div/div/div/div[3]/div/button[3]"
                 )
                 thread_button.click()
                 sleep(2)
